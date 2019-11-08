@@ -44,8 +44,9 @@ RUN cd /opt && \
 RUN cd /opt/kaldi/tools && \
     ./install_portaudio.sh && \
     cd /opt/kaldi/src/online && make depend -j $(nproc) && make -j $(nproc) && \
-    cd /opt/kaldi/src/gst-plugin && sed -i 's/-lmkl_p4n//g' Makefile && make depend -j $(nproc) && make -j $(nproc) && \
-    cd /opt && \
+    cd /opt/kaldi/src/gst-plugin && sed -i 's/-lmkl_p4n//g' Makefile && make depend -j $(nproc) && make -j $(nproc) 
+   
+RUN cd /opt && \
     git clone https://github.com/alumae/gst-kaldi-nnet2-online.git && \
     cd /opt/gst-kaldi-nnet2-online/src && \
     sed -i '/KALDI_ROOT?=\/home\/tanel\/tools\/kaldi-trunk/c\KALDI_ROOT?=\/opt\/kaldi' Makefile && \
@@ -55,12 +56,14 @@ RUN cd /opt/kaldi/tools && \
     rm -rf /opt/kaldi/.git && \
     rm -rf /opt/kaldi/egs/ /opt/kaldi/windows/ /opt/kaldi/misc/ && \
     find /opt/kaldi/src/ -type f -not -name '*.so' -delete && \
-    find /opt/kaldi/tools/ -type f \( -not -name '*.so' -and -not -name '*.so*' \) -delete && \
-    cd /opt && git clone https://github.com/naxingyu/kaldi-gstreamer-server.git && \
+    find /opt/kaldi/tools/ -type f \( -not -name '*.so' -and -not -name '*.so*' \) -delete 
+   
+RUN cd /opt && git clone https://github.com/naxingyu/kaldi-gstreamer-server.git && \
     rm -rf /opt/kaldi-gstreamer-server/.git/ && \
-    rm -rf /opt/kaldi-gstreamer-server/test/ && \
-    mkdir -p /opt/models/chinese && cd /opt/models/chinese && \
-    wget http://kaldi-asr.org/models/11/0011_multi_cn_chain_sp_online_v2.tar.gz && \
+    rm -rf /opt/kaldi-gstreamer-server/test/ 
+   
+RUN mkdir -p /opt/models/chinese && cd /opt/models/chinese && \
+    wget -t 0 -T 120 -c http://kaldi-asr.org/models/11/0011_multi_cn_chain_sp_online_v2.tar.gz && \
     tar zxvf 0011_multi_cn_chain_sp_online_v2.tar.gz && \
     rm 0011_multi_cn_chain_sp_online_v2.tar.gz && \
     cp /opt/kaldi-gstreamer-server/sample_chinese_nnet3.yaml /opt/models && \
